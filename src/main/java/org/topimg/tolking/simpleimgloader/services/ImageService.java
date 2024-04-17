@@ -73,15 +73,24 @@ public class ImageService {
 
         String newFileName = UUID.randomUUID() + "." + mime;
         File newFile = Paths.get(DIR_NAME,newFileName).toFile();
-        InputStream inputStream = file.getInputStream();
-        FileOutputStream outputStream = new FileOutputStream(newFile);
-        try {
+        try (InputStream inputStream = file.getInputStream(); FileOutputStream outputStream = new FileOutputStream(newFile)) {
             IOUtils.copy(inputStream, outputStream);
             repository.insertImage(description, newFileName);
         } catch (IOException e) {
             throw new IOException("Failed to save file.", e);
         }
 
+    }
+
+    public void deleteImage(String name) throws IOException {
+        Path path = Paths.get(DIR_NAME,name);
+
+        try {
+            Files.delete(path);
+            repository.deleteImageByNameEqualsIgnoreCase(name);
+        } catch (IOException e) {
+            throw new IOException("Failed to delete the file: " + e.getMessage());
+        }
     }
 
     private String getFileExtension(String fileName) {

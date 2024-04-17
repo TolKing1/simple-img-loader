@@ -44,7 +44,7 @@ public class ImageController {
     }
 
     @PostMapping("/image/save")
-    public ResponseEntity<String> saveImage(@RequestParam String description,
+    public ResponseEntity<String> saveImage(@RequestParam("description") String description,
                             @RequestParam("image")MultipartFile file) {
         try {
             service.saveImage(description, file);
@@ -56,6 +56,19 @@ public class ImageController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body("Image saved successfully");
+    }
+    @DeleteMapping("/image/delete")
+    public ResponseEntity<String> deleteImage(@RequestParam("name") String name) {
+        try {
+            service.deleteImage(name);
+        } catch (IOException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Image deleted successfully");
     }
 
 }
