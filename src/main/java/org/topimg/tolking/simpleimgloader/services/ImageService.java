@@ -40,8 +40,9 @@ public class ImageService {
     }
 
     public List<Image> fullTextSearch(String desc) {
-        return entityManager.createNativeQuery("select * from Image img where to_tsvector(img.description) @@ plainto_tsquery(:textQuery)", Image.class)
-                .setParameter("textQuery", desc)
+        return entityManager.createNativeQuery("select * from Image img where to_tsvector(img.description) @@ plainto_tsquery(:first) OR img.description like :second", Image.class)
+                .setParameter("first", desc)
+                .setParameter("second", "%"+desc+"%")
                 .getResultList();
     }
 
