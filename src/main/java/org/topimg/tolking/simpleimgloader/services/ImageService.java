@@ -57,7 +57,7 @@ public class ImageService {
         return new ImageData(new ByteArrayResource(imageByte), mime);
     }
 
-    public void saveImage(String description, MultipartFile file) throws IOException {
+    public String saveImage(String description, MultipartFile file) throws IOException {
         String mime = validateFileAndGetMime(file);
 
         String newFileName = UUID.randomUUID() + "." + mime;
@@ -68,6 +68,8 @@ public class ImageService {
             IOUtils.copy(inputStream, outputStream);
 
             repository.save(new Image(newFileName, description));
+
+            return newFileName;
         } catch (IOException e) {
             throw new IOException("Failed to save file.", e);
         }

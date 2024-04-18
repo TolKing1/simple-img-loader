@@ -56,10 +56,10 @@ public class ImageController {
             @RequestParam("description") String description, @RequestParam("image") MultipartFile file)
             throws IOException {
 
-        service.saveImage(description, file);
+        String name = service.saveImage(description, file);
 
         logger.info("SAVE IMAGE: {}", description);
-        return new ResponseEntity<>("Image saved successfully",HttpStatus.OK);
+        return new ResponseEntity<>("Image saved successfully: " + name, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
@@ -67,7 +67,7 @@ public class ImageController {
         service.deleteImage(name);
 
         logger.info("DELETED IMAGE: {}", name);
-        return new ResponseEntity<>("Image deleted successfully",HttpStatus.OK);
+        return new ResponseEntity<>("Image deleted successfully: " + name, HttpStatus.OK);
     }
 
 }
