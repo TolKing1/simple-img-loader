@@ -17,6 +17,11 @@ public class Image {
     public Image() {
     }
 
+    public Image(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }

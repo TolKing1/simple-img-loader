@@ -1,6 +1,5 @@
 package org.topimg.tolking.simpleimgloader.services;
 
-import jakarta.persistence.EntityManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.core.io.ByteArrayResource;
@@ -26,24 +25,18 @@ import java.util.UUID;
 public class ImageService {
     private static final String DIR_NAME = "images";
     private final ImageRepository repository;
-    private final EntityManager entityManager;
 
-    public ImageService(ImageRepository repository, EntityManager entityManager) throws IOException {
+    public ImageService(ImageRepository repository) throws IOException {
         this.repository = repository;
-        this.entityManager = entityManager;
-        // Ensure that PATH directory exists
+
         createDirectoryIfNotExists();
     }
 
-    public List<Image> search(String desc) {
-        return repository.searchImagesByDescriptionContainingIgnoreCase(desc);
-    }
-
     public List<Image> fullTextSearch(String desc) {
-        return entityManager.createNativeQuery("select * from Image img where to_tsvector(img.description) @@ plainto_tsquery(:first) OR img.description like :second", Image.class)
-                .setParameter("first", desc)
-                .setParameter("second", "%"+desc+"%")
-                .getResultList();
+        return repository.searchFullText(desc);
+    }
+    public List<Image> getAll(){
+        return repository.findAll();
     }
 
     public ImageData getImageFromLocal(String name) throws IOException {
@@ -75,7 +68,8 @@ public class ImageService {
         File newFile = Paths.get(DIR_NAME,newFileName).toFile();
         try (InputStream inputStream = file.getInputStream(); FileOutputStream outputStream = new FileOutputStream(newFile)) {
             IOUtils.copy(inputStream, outputStream);
-            repository.insertImage(description, newFileName);
+
+            repository.save(new Image(newFileName,description));
         } catch (IOException e) {
             throw new IOException("Failed to save file.", e);
         }

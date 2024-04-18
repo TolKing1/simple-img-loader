@@ -4,18 +4,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.topimg.tolking.simpleimgloader.entities.Image;
 
 import java.util.List;
 
 @Repository
-@Transactional
 public interface ImageRepository extends JpaRepository<Image, Long> {
-    List<Image> searchImagesByDescriptionContainingIgnoreCase(final String description);
+    @Query(value =
+            "select * from Image " +
+                    "where to_tsvector(description) @@ plainto_tsquery(:text) " +
+                    "   OR description like concat('%', :text, '%')"
+            , nativeQuery = true)
+    List<Image> searchFullText(@Param("text") String description);
 
-    void deleteImageByNameEqualsIgnoreCase(@Param("text") final String name);
-
-    @Query(value = "INSERT INTO image(description, name) values(:desc,:name) returning id", nativeQuery = true)
-    long insertImage(@Param("desc") String desc, @Param("name") String name);
+    void deleteImageByNameEqualsIgnoreCase(String name);
 }
