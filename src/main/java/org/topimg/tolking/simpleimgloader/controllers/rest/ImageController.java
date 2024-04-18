@@ -33,7 +33,6 @@ public class ImageController {
         ByteArrayResource imageByte = imageData.getResource();
         String mimeType = imageData.getMimeType();
 
-        logger.info("GET IMAGE FILE: {}", name);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentLength(imageByte.contentLength())
@@ -45,45 +44,30 @@ public class ImageController {
 
     @GetMapping("/search")
     public List<Image> searchImage(@RequestParam("description") String desc){
-        logger.info("SEARCH IMAGES by PROMPT: {}", desc);
         return service.fullTextSearch(desc);
     }
     @GetMapping("/all")
     public List<Image> getAllImages(){
-        logger.info("GET all images");
         return service.getAll();
     }
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveImage(@RequestParam("description") String description,
-                            @RequestParam("image") MultipartFile file) {
-        try {
-            service.saveImage(description, file);
-        } catch (IOException e) {
-            logger.warn("FAILED TO SAVE IMAGE: {}", description);
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
-        }
+    public ResponseEntity<String> saveImage(
+            @RequestParam("description") String description, @RequestParam("image") MultipartFile file)
+            throws IOException {
+
+        service.saveImage(description, file);
+
         logger.info("SAVE IMAGE: {}", description);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body("Image saved successfully");
+        return new ResponseEntity<>("Image saved successfully",HttpStatus.OK);
     }
+
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteImage(@RequestParam("name") String name) {
-        try {
-            service.deleteImage(name);
-        } catch (IOException e) {
-            logger.warn("FAILED TO DELETE IMAGE: {}", name);
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
-        }
+    public ResponseEntity<String> deleteImage(@RequestParam("name") String name) throws IOException {
+        service.deleteImage(name);
+
         logger.info("DELETED IMAGE: {}", name);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body("Image deleted successfully");
+        return new ResponseEntity<>("Image deleted successfully",HttpStatus.OK);
     }
 
 }
