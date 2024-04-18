@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.topimg.tolking.simpleimgloader.controllers.rest.ImageController;
 
 import javax.naming.InvalidNameException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.time.LocalDateTime;
@@ -19,8 +20,8 @@ import java.time.LocalDateTime;
 public class ApiExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
-    @ExceptionHandler(IOException.class)
-    public ResponseEntity<ApiError> handleException(IOException exception, HttpServletRequest request) {
+    @ExceptionHandler({IOException.class})
+    public ResponseEntity<ApiError> handleIOException(IOException exception, HttpServletRequest request) {
         ApiError apiError = getApiError(
                 exception,
                 request,
@@ -28,6 +29,17 @@ public class ApiExceptionHandler {
         );
 
         return new ResponseEntity<>(apiError,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler({FileNotFoundException.class})
+    public ResponseEntity<ApiError> handleFilNotFoundException(IOException exception, HttpServletRequest request) {
+        ApiError apiError = getApiError(
+                exception,
+                request,
+                HttpStatus.NOT_FOUND.getReasonPhrase()
+        );
+
+        return new ResponseEntity<>(apiError,HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler( {InvalidNameException.class, FileSystemException.class, InvalidMimeTypeException.class})

@@ -10,10 +10,7 @@ import org.topimg.tolking.simpleimgloader.entities.Image;
 import org.topimg.tolking.simpleimgloader.entities.ImageData;
 import org.topimg.tolking.simpleimgloader.repos.ImageRepository;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,10 +39,14 @@ public class ImageService {
         return repository.findAll();
     }
 
-    public ImageData getImageFromLocal(String name) throws IOException {
+    public ImageData getImageFromLocal(String name) throws FileNotFoundException {
         byte[] imageByte;
         String mime;
-        imageByte = Files.readAllBytes(Paths.get(DIR_NAME, name));
+        try {
+            imageByte = Files.readAllBytes(Paths.get(DIR_NAME, name));
+        } catch (IOException e) {
+            throw new FileNotFoundException("File not found: "+name);
+        }
 
         mime = getFileExtension(name);
         // Response contentType doesn't support jpg
