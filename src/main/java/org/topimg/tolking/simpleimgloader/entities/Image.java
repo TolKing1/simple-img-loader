@@ -9,7 +9,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String name;
+    private String fileId;
 
     @Column(nullable = false)
     private String description;
@@ -17,8 +17,8 @@ public class Image {
     public Image() {
     }
 
-    public Image(String name, String description) {
-        this.name = name;
+    public Image(String fileId, String description) {
+        this.fileId = fileId;
         this.description = description;
     }
 
@@ -30,12 +30,12 @@ public class Image {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFileId() {
+        return fileId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
     }
 
     public String getDescription() {
