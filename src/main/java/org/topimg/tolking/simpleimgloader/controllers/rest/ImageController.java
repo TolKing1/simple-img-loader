@@ -43,10 +43,9 @@ public class ImageController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteImage(@RequestParam("name") String name) {
-        String infoMsg = "Image deleted successfully: " + name;
-
-        service.deleteImage(name);
+    public ResponseEntity<String> deleteImage(@RequestParam("file_id") String fileId) {
+        long id = service.deleteImage(fileId);
+        String infoMsg = "Image deleted successfully: " + id;
 
         logger.info(infoMsg);
         return new ResponseEntity<>(infoMsg, HttpStatus.OK);

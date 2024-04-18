@@ -19,5 +19,5 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> searchFullText(@Param("text") String description);
 
     @Transactional
-    void deleteImageByFileIdEqualsIgnoreCase(String name);
+    long deleteImageByFileIdEqualsIgnoreCase(String name);
 }

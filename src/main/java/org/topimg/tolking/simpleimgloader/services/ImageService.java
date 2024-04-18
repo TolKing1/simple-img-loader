@@ -26,8 +26,8 @@ public class ImageService {
         return repository.save(new Image(fileId, description)).getDescription();
     }
 
-    public void deleteImage(String name) {
-        repository.deleteImageByFileIdEqualsIgnoreCase(name);
+    public long deleteImage(String name) {
+        return repository.deleteImageByFileIdEqualsIgnoreCase(name);
     }
 
 }
