@@ -14,7 +14,7 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     @Query(value =
             "select * from Image " +
                     "where to_tsvector(description) @@ plainto_tsquery(:text) " +
-                    "   OR description like concat('%', :text, '%')"
+                    "   OR description like concat('%', :text, '%') ORDER BY id DESC"
             , nativeQuery = true)
     List<Image> searchFullText(@Param("text") String description);
 
